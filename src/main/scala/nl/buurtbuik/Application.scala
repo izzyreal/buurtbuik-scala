@@ -4,10 +4,10 @@ import cats.effect._
 import cats.implicits._
 import doobie.Transactor
 import doobie.util.transactor.Transactor.Aux
-import nl.buurtbuik.endpoint.{LocationEndpoints, TweetEndpoints}
+import nl.buurtbuik.endpoint.LocationEndpoints
+import org.http4s.implicits._
 import org.http4s.server.Router
 import org.http4s.server.blaze._
-import org.http4s.implicits._
 
 import scala.concurrent.ExecutionContext
 
@@ -18,7 +18,7 @@ object Application extends IOApp {
     "org.postgresql.Driver", "jdbc:postgresql://localhost:5432/postgres", "postgres", "docker"
   )
 
-  private val services = TweetEndpoints.tweetEndpoints <+> LocationEndpoints.locationEndpoints
+  private val services = LocationEndpoints.locationEndpoints
   private val httpApp = Router("/" -> services).orNotFound
 
   def run(args: List[String]): IO[ExitCode] = {

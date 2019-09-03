@@ -14,4 +14,6 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-literal" % "0.12.0-RC4"
 )
 
+addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
+
 scalacOptions ++= Seq("-Ypartial-unification")

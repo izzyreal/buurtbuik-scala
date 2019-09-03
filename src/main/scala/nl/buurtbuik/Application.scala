@@ -18,7 +18,7 @@ object Application extends IOApp {
     "org.postgresql.Driver", "jdbc:postgresql://localhost:5432/postgres", "postgres", "docker"
   )
 
-  private val services = LocationEndpoints.locationEndpoints
+  private val services = Authentication.middleware(LocationEndpoints.locationEndpoints)
   private val httpApp = Router("/" -> services).orNotFound
 
   def run(args: List[String]): IO[ExitCode] = {

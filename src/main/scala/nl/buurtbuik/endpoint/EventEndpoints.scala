@@ -13,10 +13,10 @@ object EventEndpoints {
   val eventEndpoints: AuthedRoutes[User, IO] = AuthedRoutes.of {
 
     case GET -> Root / "events" as _ =>
-      Ok(EventRepository.getEvents.asJson)
+      Ok(EventRepository.getAll.asJson)
 
     case GET -> Root / "events" / IntVar(id) as _ =>
-      Helper.getById(id, EventRepository.getEventById)
+      Helper.getById(id, EventRepository.getById)
 
   }
 

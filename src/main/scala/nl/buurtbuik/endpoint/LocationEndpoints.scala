@@ -13,10 +13,10 @@ object LocationEndpoints {
   val locationEndpoints: AuthedRoutes[User, IO] = AuthedRoutes.of {
 
     case GET -> Root / "locations" as _ =>
-      Ok(LocationRepository.getLocations.asJson)
+      Ok(LocationRepository.getAll.asJson)
 
     case GET -> Root / "locations" / IntVar(id) as _ =>
-      Helper.getById(id, LocationRepository.getLocation)
+      Helper.getById(id, LocationRepository.getById)
 
   }
 

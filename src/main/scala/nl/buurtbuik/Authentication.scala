@@ -21,7 +21,7 @@ object Authentication {
     val payload = header.split(" ").lastOption
     if (payload.isDefined) {
       val credentials = BasicCredentials(payload.get)
-      val permission = PermissionRepository.getPermission(credentials.username, credentials.password)
+      val permission = PermissionRepository.getByEmailAndPassword(credentials.username, credentials.password)
       if (permission.isDefined) {
         return Option(credentials)
       }

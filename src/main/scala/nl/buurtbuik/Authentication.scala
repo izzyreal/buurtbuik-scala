@@ -26,7 +26,7 @@ object Authentication {
         return Option(credentials)
       }
     }
-      Option.empty
+    Option.empty
   }
 
   private val authUser: Kleisli[IO, Request[IO], Either[String, User]] = Kleisli({ request =>

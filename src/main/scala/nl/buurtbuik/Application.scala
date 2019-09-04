@@ -4,7 +4,7 @@ import cats.effect._
 import cats.implicits._
 import doobie.Transactor
 import doobie.util.transactor.Transactor.Aux
-import nl.buurtbuik.endpoint.LocationEndpoints
+import nl.buurtbuik.endpoint.{EventEndpoints, LocationEndpoints}
 import org.http4s.implicits._
 import org.http4s.server.Router
 import org.http4s.server.blaze._
@@ -28,11 +28,12 @@ object Application extends IOApp {
     allowCredentials = true,
     maxAge = 1.day.toSeconds)
 
-  private val services = CORS(Authentication.middleware(LocationEndpoints.locationEndpoints), corsConfig)
+  private val endpoints = LocationEndpoints.locationEndpoints <+> EventEndpoints.eventEndpoints
+  private val services = CORS(Authentication.middleware(endpoints), corsConfig)
   private val httpApp = Router("/" -> services).orNotFound
 
   def run(args: List[String]): IO[ExitCode] = {
-    BlazeServerBuilder[IO].bindHttp(8080, "localhost").withHttpApp(httpApp)
+    BlazeServerBuilder[IO].bindHttp(8081, "localhost").withHttpApp(httpApp)
       .serve.compile.drain.as(ExitCode.Success)
   }
 }

@@ -3,7 +3,7 @@ package nl.buurtbuik
 import cats.data.{Kleisli, OptionT}
 import cats.effect.IO
 import cats.implicits._
-import nl.buurtbuik.repository.PermissionRepository
+import nl.buurtbuik.repository.VolunteerRepository
 import org.http4s.dsl.io._
 import org.http4s.headers.Authorization
 import org.http4s.server.AuthMiddleware
@@ -21,8 +21,8 @@ object Authentication {
     val payload = header.split(" ").lastOption
     if (payload.isDefined) {
       val credentials = BasicCredentials(payload.get)
-      val permission = PermissionRepository.getByEmailAndPassword(credentials.username, credentials.password)
-      if (permission.isDefined) {
+      val volunteer = VolunteerRepository.getByEmail(credentials.username)
+      if (volunteer.isDefined && credentials.password.equals(volunteer.get.password)) {
         return Option(credentials)
       }
     }

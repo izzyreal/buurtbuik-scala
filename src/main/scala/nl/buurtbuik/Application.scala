@@ -5,17 +5,23 @@ import cats.implicits._
 import doobie.Transactor
 import doobie.util.transactor.Transactor.Aux
 import nl.buurtbuik.endpoint.EventEndpoints.eventEndpoints
-import nl.buurtbuik.endpoint.VolunteerEndpoints.volunteerEndpoints
 import nl.buurtbuik.endpoint.ParticipantEndpoints.participantEndpoints
+import nl.buurtbuik.endpoint.VolunteerEndpoints.volunteerEndpoints
+import org.http4s.EntityEncoder
+import org.http4s.circe._
 import org.http4s.implicits._
 import org.http4s.server.Router
 import org.http4s.server.blaze._
 import org.http4s.server.middleware.{CORS, CORSConfig}
 
+import scala.collection.immutable.HashMap
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
 object Application extends IOApp {
+
+  implicit val hashMapEncoder: EntityEncoder[IO, HashMap[String, Boolean]] = jsonEncoderOf[IO, HashMap[String, Boolean]]
+  implicit val intEncoder: EntityEncoder[IO, Int] = jsonEncoderOf[IO, Int]
 
   implicit val cs: ContextShift[IO] = IO.contextShift(ExecutionContext.global)
   val xa: Aux[IO, Unit] = Transactor.fromDriverManager[IO](

@@ -7,15 +7,15 @@ import nl.buurtbuik.repository.VolunteerRepository
 import nl.buurtbuik.repository.VolunteerRepository.Volunteer
 import org.http4s.circe._
 import org.http4s.dsl.io._
-import org.http4s.{AuthedRoutes, EntityDecoder, EntityEncoder}
+import org.http4s.{AuthedRoutes, EntityDecoder}
 
 import scala.collection.immutable.HashMap
+import nl.buurtbuik.Application.hashMapEncoder
+import nl.buurtbuik.Application.intEncoder
 
 object VolunteerEndpoints {
 
   private implicit val decoder: EntityDecoder[IO, Volunteer] = jsonOf[IO, Volunteer]
-  private implicit val intEncoder: EntityEncoder[IO, Int] = jsonEncoderOf[IO, Int]
-  private implicit val hashMapEncoder: EntityEncoder[IO, HashMap[String, Boolean]] = jsonEncoderOf[IO, HashMap[String, Boolean]]
 
   val volunteerEndpoints: AuthedRoutes[User, IO] = AuthedRoutes.of {
 

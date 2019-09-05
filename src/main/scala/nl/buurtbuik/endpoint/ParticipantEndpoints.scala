@@ -34,6 +34,9 @@ object ParticipantEndpoints {
       val p = ParticipantRepository.getByEventId(eventId).find(p => p.volunteerId == volunteer.id)
       Ok(IsCurrentUserParticipatingResponse(p.isDefined, volunteer.id))
 
+    case POST -> Root / "participants" / "current-user" / IntVar(eventId) as user =>
+      val volunteerId = VolunteerRepository.getByEmail(user.user).get.id
+      ParticipantRepository.insert(ParticipantPostData(volunteerId, eventId)).flatMap(Created(_))
 
   }
 }

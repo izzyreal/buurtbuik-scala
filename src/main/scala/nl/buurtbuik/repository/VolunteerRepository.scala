@@ -4,6 +4,7 @@ import cats.effect.IO
 import doobie.implicits._
 import io.circe.generic.JsonCodec
 import nl.buurtbuik.Application.xa
+import org.http4s.Response
 
 object VolunteerRepository {
 
@@ -29,6 +30,10 @@ object VolunteerRepository {
 
   def insert(v: Volunteer): IO[Int] =
     sql"insert into buurtbuik.volunteers values (default, ${v.email}, ${v.password}, ${v.firstName}, ${v.lastName}, ${v.phone}, false)"
+      .update.run.transact(xa)
+
+  def update(v: Volunteer): IO[Int] =
+    sql"update buurtbuik.volunteers set email=${v.email}, first_name=${v.firstName}, last_name=${v.lastName}, phone=${v.phone} where buurtbuik.volunteers.id = ${v.id}"
       .update.run.transact(xa)
 
 }

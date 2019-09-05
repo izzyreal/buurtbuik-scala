@@ -36,5 +36,8 @@ object VolunteerEndpoints {
         Ok(HashMap("admin" -> false))
       }
 
+    case authReq@PUT -> Root / "volunteers" / IntVar(id) as user =>
+      authReq.req.as[Volunteer].flatMap(VolunteerRepository.update).flatMap(_ => NoContent())
+
   }
 }

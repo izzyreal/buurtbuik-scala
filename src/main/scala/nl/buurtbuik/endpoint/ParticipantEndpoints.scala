@@ -42,5 +42,8 @@ object ParticipantEndpoints {
       val volunteerId = VolunteerRepository.getByEmail(user.user).get.id
       Ok(ParticipantRepository.deleteByEventAndVolunteerIds(volunteerId, eventId))
 
+    case DELETE -> Root / "participants" / IntVar(eventId) as user =>
+      Ok(ParticipantRepository.deleteByEventId(eventId))
+
   }
 }

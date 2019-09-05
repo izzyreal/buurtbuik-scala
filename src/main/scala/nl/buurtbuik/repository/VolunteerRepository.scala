@@ -33,7 +33,11 @@ object VolunteerRepository {
       .update.run.transact(xa)
 
   def update(v: VolunteerPutData, id: Int): IO[Int] =
-    sql"update buurtbuik.volunteers set email=${v.email}, first_name=${v.firstName}, last_name=${v.lastName}, phone=${v.phone} where buurtbuik.volunteers.id = $id"
+    sql"update buurtbuik.volunteers set email=${v.email}, first_name=${v.firstName}, last_name=${v.lastName}, phone=${v.phone} where id = $id"
       .update.run.transact(xa)
+
+  def delete(id: Int): Unit =
+    sql"delete from buurtbuik.volunteers where id = $id"
+      .update.run.transact(xa).unsafeRunSync()
 
 }

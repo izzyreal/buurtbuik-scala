@@ -47,5 +47,8 @@ object VolunteerEndpoints {
     case authReq@PUT -> Root / "volunteers" / IntVar(id) as user =>
       authReq.req.as[VolunteerPutData].flatMap(VolunteerRepository.update(_, id)).flatMap(_ => NoContent())
 
+    case DELETE -> Root / "volunteers" / IntVar(id) as user =>
+      Ok(VolunteerRepository.delete(id))
+
   }
 }

@@ -4,7 +4,7 @@ import java.sql.Timestamp
 
 import doobie.implicits._
 import io.circe.generic.JsonCodec
-import nl.buurtbuik.Application
+import nl.buurtbuik.Application.xa
 
 object EventRepository {
 
@@ -16,14 +16,14 @@ object EventRepository {
       .query[(Int, Timestamp, Timestamp)]
       .map(tupleToEvent)
       .option
-      .transact(Application.xa).unsafeRunSync()
+      .transact(xa).unsafeRunSync()
 
   def getAll: List[Event] =
     sql"select * from buurtbuik.events"
       .query[(Int, Timestamp, Timestamp)]
       .map(tupleToEvent)
       .to[List]
-      .transact(Application.xa).unsafeRunSync()
+      .transact(xa).unsafeRunSync()
 
   private def tupleToEvent(t: (Int, Timestamp, Timestamp)): Event = {
     Event(t._1, t._2.toLocalDateTime.toString, t._3.toLocalDateTime.toString)

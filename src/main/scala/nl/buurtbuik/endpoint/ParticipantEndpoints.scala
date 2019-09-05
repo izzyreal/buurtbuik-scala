@@ -30,16 +30,16 @@ object ParticipantEndpoints {
       authReq.req.as[ParticipantPostData].flatMap(ParticipantRepository.insert).flatMap(Created(_))
 
     case GET -> Root / "participants" / "is-current-user-participating" / IntVar(eventId) as user =>
-      val volunteer = VolunteerRepository.getByEmail(user.getEmail).get
+      val volunteer = VolunteerRepository.getByEmail(user.email).get
       val p = ParticipantRepository.getByEventId(eventId).find(p => p.volunteerId == volunteer.id)
       Ok(IsCurrentUserParticipatingResponse(p.isDefined, volunteer.id))
 
     case POST -> Root / "participants" / "current-user" / IntVar(eventId) as user =>
-      val volunteerId = VolunteerRepository.getByEmail(user.getEmail).get.id
+      val volunteerId = VolunteerRepository.getByEmail(user.email).get.id
       ParticipantRepository.insert(ParticipantPostData(volunteerId, eventId)).flatMap(Created(_))
 
     case DELETE -> Root / "participants" / "current-user" / IntVar(eventId) as user =>
-      val volunteerId = VolunteerRepository.getByEmail(user.getEmail).get.id
+      val volunteerId = VolunteerRepository.getByEmail(user.email).get.id
       Ok(ParticipantRepository.deleteByEventAndVolunteerIds(volunteerId, eventId))
 
     case DELETE -> Root / "participants" / IntVar(eventId) as user =>

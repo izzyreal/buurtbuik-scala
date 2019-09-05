@@ -35,7 +35,7 @@ object VolunteerEndpoints {
       authReq.req.as[VolunteerPostData].flatMap(VolunteerRepository.insert).flatMap(Created(_))
 
     case GET -> Root / "volunteers" / "is-current-user-admin" as user =>
-      val v = VolunteerRepository.getByEmail(user.getEmail)
+      val v = VolunteerRepository.getByEmail(user.email)
       if (v.isDefined) {
         Ok(HashMap("admin" -> v.get.admin))
       } else {

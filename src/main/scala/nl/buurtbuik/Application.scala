@@ -31,8 +31,8 @@ object Application extends IOApp {
   val corsConfig = CORSConfig(
     anyOrigin = true,
     anyMethod = false,
-    allowedOrigins = Set("foo.com", "bar.com"),
-    allowedMethods = Some(Set("GET", "POST")),
+    allowedOrigins = Set("buurtbuik.nl"),
+    allowedMethods = Some(Set("GET", "POST", "PUT", "DELETE")),
     allowCredentials = true,
     maxAge = 1.day.toSeconds)
 

@@ -38,5 +38,9 @@ object ParticipantEndpoints {
       val volunteerId = VolunteerRepository.getByEmail(user.user).get.id
       ParticipantRepository.insert(ParticipantPostData(volunteerId, eventId)).flatMap(Created(_))
 
+    case DELETE -> Root / "participants" / "current-user" / IntVar(eventId) as user =>
+      val volunteerId = VolunteerRepository.getByEmail(user.user).get.id
+      Ok(ParticipantRepository.deleteByEventAndVolunteerIds(volunteerId, eventId))
+
   }
 }

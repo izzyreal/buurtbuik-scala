@@ -6,6 +6,7 @@ import doobie.Transactor
 import doobie.util.transactor.Transactor.Aux
 import nl.buurtbuik.endpoint.EventEndpoints.eventEndpoints
 import nl.buurtbuik.endpoint.VolunteerEndpoints.volunteerEndpoints
+import nl.buurtbuik.endpoint.ParticipantEndpoints.participantEndpoints
 import org.http4s.implicits._
 import org.http4s.server.Router
 import org.http4s.server.blaze._
@@ -29,7 +30,7 @@ object Application extends IOApp {
     allowCredentials = true,
     maxAge = 1.day.toSeconds)
 
-  private val endpoints = eventEndpoints <+> volunteerEndpoints
+  private val endpoints = eventEndpoints <+> volunteerEndpoints <+> participantEndpoints
 
   private val services = CORS(Authentication.middleware(endpoints), corsConfig)
   private val httpApp = Router("/" -> services).orNotFound

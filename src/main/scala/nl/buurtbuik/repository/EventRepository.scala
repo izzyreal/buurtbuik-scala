@@ -12,13 +12,20 @@ object EventRepository {
   case class Event(id: Int, startAt: String, endAt: String)
 
   def getById(id: Int): Option[Event] =
-    sql"select * from buurtbuik.events where id = $id".query[Event].option.transact(Application.xa).unsafeRunSync()
+    sql"select * from buurtbuik.events where id = $id"
+      .query[(Int, Timestamp, Timestamp)]
+      .map(tupleToEvent)
+      .option
+      .transact(Application.xa).unsafeRunSync()
 
   def getAll: List[Event] =
     sql"select * from buurtbuik.events"
       .query[(Int, Timestamp, Timestamp)]
-      .map(e => Event(0, e._2.toLocalDateTime.toString, e._3.toLocalDateTime.toString))
+      .map(tupleToEvent)
       .to[List]
       .transact(Application.xa).unsafeRunSync()
 
+  private def tupleToEvent(t: (Int, Timestamp, Timestamp)): Event = {
+    Event(t._1, t._2.toLocalDateTime.toString, t._3.toLocalDateTime.toString)
+  }
 }

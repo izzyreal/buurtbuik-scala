@@ -1,6 +1,7 @@
 package nl.buurtbuik.endpoint
 
 import cats.effect.IO
+import io.circe.generic.JsonCodec
 import io.circe.syntax._
 import nl.buurtbuik.User
 import nl.buurtbuik.repository.VolunteerRepository
@@ -13,9 +14,16 @@ import scala.collection.immutable.HashMap
 import nl.buurtbuik.Application.hashMapEncoder
 import nl.buurtbuik.Application.intEncoder
 
+@JsonCodec
+case class VolunteerPutData(email: String, firstName: String, lastName: String, phone: String)
+
+@JsonCodec
+case class VolunteerPostData(email: String, password: String, firstName: String, lastName: String, phone: String)
+
 object VolunteerEndpoints {
 
-  private implicit val decoder: EntityDecoder[IO, Volunteer] = jsonOf[IO, Volunteer]
+  private implicit val postDecoder: EntityDecoder[IO, VolunteerPostData] = jsonOf[IO, VolunteerPostData]
+  private implicit val putDecoder: EntityDecoder[IO, VolunteerPutData] = jsonOf[IO, VolunteerPutData]
 
   val volunteerEndpoints: AuthedRoutes[User, IO] = AuthedRoutes.of {
 
@@ -26,7 +34,7 @@ object VolunteerEndpoints {
       Helper.getById(id, VolunteerRepository.getById)
 
     case authReq@POST -> Root / "volunteers" as user =>
-      authReq.req.as[Volunteer].flatMap(VolunteerRepository.insert).flatMap(Created(_))
+      authReq.req.as[VolunteerPostData].flatMap(VolunteerRepository.insert).flatMap(Created(_))
 
     case GET -> Root / "volunteers" / "is-current-user-admin" as user =>
       val v = VolunteerRepository.getByEmail(user.user)
@@ -37,7 +45,7 @@ object VolunteerEndpoints {
       }
 
     case authReq@PUT -> Root / "volunteers" / IntVar(id) as user =>
-      authReq.req.as[Volunteer].flatMap(VolunteerRepository.update).flatMap(_ => NoContent())
+      authReq.req.as[VolunteerPutData].flatMap(VolunteerRepository.update(_, id)).flatMap(_ => NoContent())
 
   }
 }

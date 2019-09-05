@@ -9,7 +9,7 @@ import org.http4s.headers.Authorization
 import org.http4s.server.AuthMiddleware
 import org.http4s.{AuthedRoutes, BasicCredentials, Request}
 
-case class User(user: String)
+case class User(email: String)
 
 object Authentication {
 

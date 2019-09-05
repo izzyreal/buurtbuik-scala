@@ -3,16 +3,14 @@ package nl.buurtbuik.endpoint
 import cats.effect.IO
 import io.circe.generic.JsonCodec
 import io.circe.syntax._
+import nl.buurtbuik.Application.{hashMapEncoder, intEncoder}
 import nl.buurtbuik.User
 import nl.buurtbuik.repository.VolunteerRepository
-import nl.buurtbuik.repository.VolunteerRepository.Volunteer
 import org.http4s.circe._
 import org.http4s.dsl.io._
 import org.http4s.{AuthedRoutes, EntityDecoder}
 
 import scala.collection.immutable.HashMap
-import nl.buurtbuik.Application.hashMapEncoder
-import nl.buurtbuik.Application.intEncoder
 
 @JsonCodec
 case class VolunteerPutData(email: String, firstName: String, lastName: String, phone: String)
@@ -37,7 +35,7 @@ object VolunteerEndpoints {
       authReq.req.as[VolunteerPostData].flatMap(VolunteerRepository.insert).flatMap(Created(_))
 
     case GET -> Root / "volunteers" / "is-current-user-admin" as user =>
-      val v = VolunteerRepository.getByEmail(user.user)
+      val v = VolunteerRepository.getByEmail(user.getEmail)
       if (v.isDefined) {
         Ok(HashMap("admin" -> v.get.admin))
       } else {

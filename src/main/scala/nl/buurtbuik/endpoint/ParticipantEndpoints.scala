@@ -23,10 +23,10 @@ object ParticipantEndpoints {
 
   val participantEndpoints: AuthedRoutes[User, IO] = AuthedRoutes.of {
 
-    case GET -> Root / "participants" / IntVar(eventId) as user =>
+    case GET -> Root / "participants" / IntVar(eventId) as _ =>
       Ok(ParticipantRepository.getByEventId(eventId).asJson)
 
-    case authReq@POST -> Root / "participants" as user =>
+    case authReq@POST -> Root / "participants" as _ =>
       authReq.req.as[ParticipantPostData].flatMap(ParticipantRepository.insert).flatMap(Created(_))
 
     case GET -> Root / "participants" / "is-current-user-participating" / IntVar(eventId) as user =>
@@ -42,7 +42,7 @@ object ParticipantEndpoints {
       val volunteerId = VolunteerRepository.getByEmail(user.email).get.id
       Ok(ParticipantRepository.deleteByEventAndVolunteerIds(volunteerId, eventId))
 
-    case DELETE -> Root / "participants" / IntVar(eventId) as user =>
+    case DELETE -> Root / "participants" / IntVar(eventId) as _ =>
       Ok(ParticipantRepository.deleteByEventId(eventId))
 
   }
